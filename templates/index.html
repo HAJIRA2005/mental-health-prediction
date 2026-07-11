@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Health Prediction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.95);
+        }
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .result-card {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+        }
+        .probability-bar {
+            height: 20px;
+            border-radius: 10px;
+            margin: 5px 0;
+            transition: width 1s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="text-center mb-5">
+                    <h1 class="display-4 text-white mb-3">
+                        <i class="fas fa-brain text-warning me-3"></i>
+                        Mental Health Prediction
+                    </h1>
+                    <p class="lead text-white-50">AI-powered assessment of mental health status based on lifestyle factors</p>
+                </div>
+
+                <div class="card p-4 mb-4">
+                    <h3 class="card-title mb-4 text-center">
+                        <i class="fas fa-clipboard-list text-primary me-2"></i>
+                        Enter Your Information
+                    </h3>
+
+                    <form id="predictionForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="feature-icon bg-primary text-white">
+                                    <i class="fas fa-moon"></i>
+                                </div>
+                                <label class="form-label fw-bold">Sleep Duration (hours)</label>
+                                <input type="number" class="form-control" name="sleep_duration" min="0" max="24" step="0.5" required>
+                                <div class="form-text">Average hours of sleep per night</div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <div class="feature-icon bg-success text-white">
+                                    <i class="fas fa-dumbbell"></i>
+                                </div>
+                                <label class="form-label fw-bold">Exercise Frequency (days/week)</label>
+                                <input type="number" class="form-control" name="exercise_frequency" min="0" max="7" required>
+                                <div class="form-text">Days per week with physical activity</div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <div class="feature-icon bg-info text-white">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <label class="form-label fw-bold">Social Interactions (1-10)</label>
+                                <input type="number" class="form-control" name="social_interactions" min="1" max="10" required>
+                                <div class="form-text">Level of social engagement (1=isolated, 10=very social)</div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <div class="feature-icon bg-warning text-white">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <label class="form-label fw-bold">Stress Level (1-10)</label>
+                                <input type="number" class="form-control" name="stress_level" min="1" max="10" required>
+                                <div class="form-text">Current stress level (1=minimal, 10=extreme)</div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <div class="feature-icon bg-secondary text-white">
+                                    <i class="fas fa-briefcase"></i>
+                                </div>
+                                <label class="form-label fw-bold">Work Hours (hours/day)</label>
+                                <input type="number" class="form-control" name="work_hours" min="0" max="24" step="0.5" required>
+                                <div class="form-text">Average working hours per day</div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <div class="feature-icon bg-success text-white">
+                                    <i class="fas fa-apple-alt"></i>
+                                </div>
+                                <label class="form-label fw-bold">Nutrition Score (1-10)</label>
+                                <input type="number" class="form-control" name="nutrition_score" min="1" max="10" required>
+                                <div class="form-text">Quality of diet (1=poor, 10=excellent)</div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <div class="feature-icon bg-primary text-white">
+                                    <i class="fas fa-om"></i>
+                                </div>
+                                <label class="form-label fw-bold">Meditation (minutes/day)</label>
+                                <input type="number" class="form-control" name="meditation" min="0" max="120" required>
+                                <div class="form-text">Daily meditation or mindfulness time</div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <div class="feature-icon bg-danger text-white">
+                                    <i class="fas fa-mobile-alt"></i>
+                                </div>
+                                <label class="form-label fw-bold">Screen Time (hours/day)</label>
+                                <input type="number" class="form-control" name="screen_time" min="0" max="24" step="0.5" required>
+                                <div class="form-text">Daily screen time (phone, computer, TV)</div>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-magic me-2"></i>
+                                Predict Mental Health Status
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Results Card -->
+                <div class="card p-4 result-card" id="resultsCard">
+                    <h3 class="card-title mb-4 text-center text-success">
+                        <i class="fas fa-chart-line me-2"></i>
+                        Prediction Results
+                    </h3>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="text-center mb-4">
+                                <div class="display-4 mb-2" id="predictionResult">-</div>
+                                <h5 class="text-muted">Predicted Status</h5>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <h5 class="mb-3">Confidence Levels</h5>
+                            <div id="probabilities">
+                                <!-- Probabilities will be inserted here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button class="btn btn-outline-primary" onclick="resetForm()">
+                            <i class="fas fa-redo me-2"></i>
+                            Make Another Prediction
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const resultsCard = document.getElementById('resultsCard');
+
+            // Show loading
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Analyzing...';
+            submitBtn.disabled = true;
+
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                    return;
+                }
+
+                // Update prediction result
+                document.getElementById('predictionResult').textContent = data.prediction;
+
+                // Update probabilities
+                const probabilitiesDiv = document.getElementById('probabilities');
+                probabilitiesDiv.innerHTML = '';
+
+                Object.entries(data.probabilities).forEach(([status, prob]) => {
+                    const color = getStatusColor(status);
+                    probabilitiesDiv.innerHTML += `
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="fw-bold">${status}</span>
+                                <span>${prob}%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-${color}" role="progressbar"
+                                     style="width: ${prob}%" aria-valuenow="${prob}" aria-valuemin="0" aria-valuemax="100">
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                // Show results
+                resultsCard.style.display = 'block';
+                resultsCard.scrollIntoView({ behavior: 'smooth' });
+            })
+            .catch(error => {
+                alert('Error making prediction. Please try again.');
+                console.error('Error:', error);
+            })
+            .finally(() => {
+                // Reset button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
+        });
+
+        function getStatusColor(status) {
+            switch(status.toLowerCase()) {
+                case 'good': return 'success';
+                case 'moderate': return 'warning';
+                case 'poor': return 'danger';
+                default: return 'secondary';
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('predictionForm').reset();
+            document.getElementById('resultsCard').style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
