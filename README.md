@@ -19,6 +19,14 @@ This project builds and evaluates multiple classification models to predict ment
 **Target Variable:**
 - Mental Health Status: Good, Moderate, Poor
 
+- ## Screenshots
+
+- <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/2e6f589d-9724-489e-9cb3-b64e9d78d91a" />
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/c0df5335-1fdb-4a42-8af9-83bff205e848" />
+
+
+
 ## Project Structure
 
 ```
